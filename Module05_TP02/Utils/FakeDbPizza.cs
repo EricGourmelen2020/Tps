@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using BO;
+using Module05_TP02_BO;
 
 namespace TPModule5_1.Utils
 {
@@ -16,6 +16,7 @@ namespace TPModule5_1.Utils
             ingredients = this.GetIngredients();
             pates = this.GetPates();
             pizzas = new List<Pizza>();
+            pizzaID = 0;
         }
 
         public static FakeDbPizza Instance

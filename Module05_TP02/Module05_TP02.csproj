@@ -120,9 +120,6 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="BO\Ingredient.cs" />
-    <Compile Include="BO\Pate.cs" />
-    <Compile Include="BO\Pizza.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PizzaController.cs" />
     <Compile Include="Global.asax.cs">
@@ -192,6 +189,12 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Module05_TP02_BO\Module05_TP02_BO.csproj">
+      <Project>{6066eaaa-6025-49bc-a1f3-fc6447c42cd9}</Project>
+      <Name>Module05_TP02_BO</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

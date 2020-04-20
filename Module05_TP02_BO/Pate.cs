@@ -1,4 +1,4 @@
-﻿namespace BO
+﻿namespace Module05_TP02_BO
 {
     public class Pate
     {
