@@ -22,7 +22,11 @@ namespace Module05_TP01.Controllers
         public ActionResult Details(int id)
         {
             Chat chatDetails = Data.Instance.ListeChats.Where(c => c.Id == id).FirstOrDefault();
-            return View(chatDetails);
+            if (chatDetails != null)
+            {
+                return View(chatDetails);
+            }
+            return RedirectToAction("Index");
         }
 
         //// GET: Chat/Create
@@ -47,33 +51,45 @@ namespace Module05_TP01.Controllers
         //    }
         //}
 
-        //// GET: Chat/Edit/5
-        //public ActionResult Edit(int id)
-        //{
-        //    return View();
-        //}
+        // GET: Chat/Edit/5
+        public ActionResult Edit(int id)
+        {
+            Chat chatToEdit = Data.Instance.ListeChats.Where(c => c.Id == id).FirstOrDefault();
+            if(chatToEdit != null)
+            {
+                return View(chatToEdit);
+            }
+            return RedirectToAction("Index");
+        }
 
-        //// POST: Chat/Edit/5
-        //[HttpPost]
-        //public ActionResult Edit(int id, FormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add update logic here
+        // POST: Chat/Edit/5
+        [HttpPost]
+        public ActionResult Edit(Chat chat)
+        {
+            try
+            {
+                Chat chatDb = Data.Instance.ListeChats.FirstOrDefault(c => c.Id == chat.Id);
+                chatDb.Age = chat.Age;
+                chatDb.Couleur = chat.Couleur;
+                chatDb.Nom = chat.Nom;
 
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View();
+            }
+        }
 
         // GET: Chat/Delete/5
         public ActionResult Delete(int id)
         {
             Chat chatToDelete = Data.Instance.ListeChats.Where(c => c.Id == id).FirstOrDefault();
-            return View(chatToDelete);
+            if (chatToDelete != null)
+            {
+                return View(chatToDelete);
+            }
+            return RedirectToAction("Index");
         }
 
         // POST: Chat/Delete/5
@@ -82,7 +98,17 @@ namespace Module05_TP01.Controllers
         {
             try
             {
-                // TODO: Add delete logic here
+                try
+                {
+                    Chat chat = Data.Instance.ListeChats.FirstOrDefault(x => x.Id == id);
+                    Data.Instance.ListeChats.Remove(chat);
+
+                    return RedirectToAction("Index");
+                }
+                catch
+                {
+                    return View();
+                }
 
                 return RedirectToAction("Index");
             }
