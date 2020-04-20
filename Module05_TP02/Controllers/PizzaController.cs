@@ -36,19 +36,59 @@ namespace Module05_TP02.Controllers
         [HttpPost]
         public ActionResult Create(CreatePizzaVM pizzaVm)
         {
+            bool hasError = false;
             try
             {
-                List<Ingredient> ingredients = new List<Ingredient>();
-                foreach (int ing in pizzaVm.IngredientsChoisis)
+                if (ModelState.IsValid)
                 {
-                    ingredients.Add(FakeDbPizza.Instance.Ingredients.FirstOrDefault(i => i.Id == ing));
+
+                    List<Ingredient> ingredients = new List<Ingredient>();
+                    foreach (int ing in pizzaVm.IngredientsChoisis)
+                    {
+                        ingredients.Add(FakeDbPizza.Instance.Ingredients.FirstOrDefault(i => i.Id == ing));
+                    }
+
+                    //if (FakeDbPizza.Instance.Pizzas.Any(p => p.Nom.ToLower() == pizzaVm.Nom.ToLower()))
+                    //{
+                    //    hasError = true;
+                    //    ModelState.AddModelError("","Il existe déjà une pizza de ce nom là");
+                        
+                    //}
+                    //if(pizzaVm.IdPate == 0)
+                    //{
+                    //    hasError = true;
+                    //    ModelState.AddModelError("", "Vous devez choisir une pâte pour votre pizza");
+                    //}
+                    //if (pizzaVm.IngredientsChoisis.Count() < 2 || pizzaVm.IngredientsChoisis.Count() > 5)
+                    //{
+                    //    hasError = true;
+                    //    ModelState.AddModelError("", "Votre pizza doit avoir entre 2 et 5 ingrédients");
+                    //}
+
+                    //if (FakeDbPizza.Instance.Pizzas
+                    //    .Where(p => p.Ingredients.Count() == ingredients.Count())
+                    //    .Where(p => p.Ingredients.Where(i => ingredients.Contains(i)).Count() == ingredients.Count())
+                    //    .Any())
+                    //{
+                    //    hasError = true;
+                    //    ModelState.AddModelError("", "Une pizza composé de ces ingrédients existe déjà");
+                    //}
+                    //if (hasError == true)
+                    //{
+                    //    pizzaVm.Ingredients = FakeDbPizza.Instance.Ingredients;
+                    //    pizzaVm.Pates = FakeDbPizza.Instance.Pates;
+                    //    return View(pizzaVm);
+                    //}
+
+                    Pizza pizza = new Pizza(FakeDbPizza.Instance.PizzaID, pizzaVm.Nom, FakeDbPizza.Instance.Pates.FirstOrDefault(p => p.Id == pizzaVm.IdPate), ingredients);
+
+                    FakeDbPizza.Instance.Pizzas.Add(pizza);
+
+                    return RedirectToAction("Index");
                 }
-
-                Pizza pizza = new Pizza(FakeDbPizza.Instance.PizzaID, pizzaVm.Nom, FakeDbPizza.Instance.Pates.FirstOrDefault(p => p.Id == pizzaVm.IdPate), ingredients);
-
-                FakeDbPizza.Instance.Pizzas.Add(pizza);
-
-                return RedirectToAction("Index");
+                pizzaVm.Ingredients = FakeDbPizza.Instance.Ingredients;
+                pizzaVm.Pates = FakeDbPizza.Instance.Pates;
+                return View(pizzaVm);
             }
             catch
             {

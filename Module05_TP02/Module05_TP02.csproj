@@ -117,6 +117,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Annotations\CheckComposition.cs" />
+    <Compile Include="Annotations\CheckIngredients.cs" />
+    <Compile Include="Annotations\CheckName.cs" />
+    <Compile Include="Annotations\CheckPateAnnotation.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
