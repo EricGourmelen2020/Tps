@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module05_TP02", "..\Module0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module06_TP01", "..\Module06_TP01\Module06_TP01.csproj", "{87006613-C36E-4AD8-B7BF-8847FCA305D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module06_TP01_BO", "..\..\..\..\..\Downloads\Cours 250 - Module 6\Module 06 - Énoncé TP 01 - Le Dojo – partie 1\Ressources Module 06 - Enoncé TP 01\Module06_TP01_BO.csproj", "{0BBA0441-0AB7-4112-946B-521C9CEC7367}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module06_TP01_BO", "..\Module06_TP01_BO\Module06_TP01_BO.csproj", "{0BBA0441-0AB7-4112-946B-521C9CEC7367}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
