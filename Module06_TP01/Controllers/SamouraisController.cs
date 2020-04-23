@@ -66,11 +66,6 @@ namespace Module06_TP01.Controllers
                 Samourai samourai = new Samourai();
                 samourai.Nom = samVM.Nom;
                 samourai.Force = samVM.Force;
-                //IEnumerable<Samourai> listSam = db.Samourais.Include(s => s.Arme).Where(s => s.Arme.Id == samVM.ArmeId);
-                //foreach (Samourai s in listSam)
-                //{
-                //    s.Arme = null;
-                //}
 
                 // Enregistre le nouveau propriétaire d'une arme si une arme à été seléctionnée
                 if (samVM.ArmeId != null)
@@ -79,7 +74,6 @@ namespace Module06_TP01.Controllers
                     arme.Samourai = samourai;
                     samourai.Arme = db.Armes.FirstOrDefault(a => a.Id == samVM.ArmeId);
                 }
-                //samourai.Arme = db.Armes.FirstOrDefault(a => a.Id == samVM.ArmeId);
                 if (samVM.ArtMartialsSelected != null)
                 {
                     samourai.ArtMartials = db.ArtMartials.Where(a => samVM.ArtMartialsSelected.Contains(a.Id)).ToList();
