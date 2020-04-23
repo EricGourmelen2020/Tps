@@ -11,52 +11,69 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Samourai</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
+<div class="form-horizontal">
+    <h4>Samourai</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Force, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Force, Model.Force)
-                @Html.ValidationMessageFor(model => model.Force, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        @if (Model.Disarm == true || (Model.Arme == null && Model.AddWeapon == false))
-        {
-            <div style="margin-bottom:15px" class="col-md-offset-2">@Html.ActionLink("Ajouter une arme ?", "Edit", "Samourais", new { id = Model.Id, addWeapon = true }, null)</div>
-        }
-        else
-        {
-            <div class="form-group">
-                @Html.LabelFor(model => model.ArmeId, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.ArmeId, Model.Armes, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ArmeId, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div style="margin-bottom:15px;" class="col-md-offset-2">
-                @Html.ActionLink("Ne pas équiper d'arme ?", "Edit", "Samourais", new { id = Model.Id, disarm = true }, null)
-            </div>
-        }
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Force, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Force, Model.Force)
+            @Html.ValidationMessageFor(model => model.Force, "", new { @class = "text-danger" })
         </div>
     </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    @if (Model.Disarm == true || (Model.Arme == null && Model.AddWeapon == false))
+    {
+        <div style="margin-bottom:15px" class="col-md-offset-2">@Html.ActionLink("Ajouter une arme ?", "Edit", "Samourais", new { id = Model.Id, addWeapon = true }, null)</div>
+    }
+    else
+    {
+        <div class="form-group">
+            @Html.LabelFor(model => model.ArmeId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.ArmeId, Model.Armes, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ArmeId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div style="margin-bottom:15px;" class="col-md-offset-2">
+            @if (TempData["NoWeapon"] != null)
+            {
+            <span style="color:salmon">@TempData["NoWeapon"]</span>
+            }
+            else
+            {
+                @Html.ActionLink("Ne pas équiper d'arme ?", "Edit", "Samourais", new { id = Model.Id, disarm = true }, null)
+            }
+        </div>
+        
+
+    }
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ArtMartialsSelected, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.ListBoxFor(model => model.ArtMartialsSelected, Model.ArtMartials, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.ArtMartialsSelected, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+</div>
 }
 
 <div>

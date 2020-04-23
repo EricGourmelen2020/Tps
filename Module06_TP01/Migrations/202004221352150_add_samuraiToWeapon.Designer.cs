@@ -7,13 +7,13 @@ namespace Module06_TP01.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.0")]
-    public sealed partial class first : IMigrationMetadata
+    public sealed partial class add_samuraiToWeapon : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(first));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(add_samuraiToWeapon));
         
         string IMigrationMetadata.Id
         {
-            get { return "202004211217206_first"; }
+            get { return "202004221352150_add_samuraiToWeapon"; }
         }
         
         string IMigrationMetadata.Source

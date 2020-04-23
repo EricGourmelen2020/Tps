@@ -20,7 +20,7 @@ namespace Module06_TP01.Controllers
         // GET: Samourais
         public ActionResult Index()
         {
-            return View(db.Samourais.ToList());
+            return View(db.Samourais.Include(s => s.ArtMartials).ToList());
         }
 
         // GET: Samourais/Details/5
@@ -30,11 +30,16 @@ namespace Module06_TP01.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Samourai samourai = db.Samourais.Find(id);
+
+            // récupère le samourai correspondant avec son arme et ses arts martiaux maitrisés
+            Samourai samourai = db.Samourais.Include(s => s.Arme).Include(s => s.ArtMartials).FirstOrDefault(s => s.Id == id);
             if (samourai == null)
             {
                 return HttpNotFound();
             }
+
+            // stock dans le viewbag le potentiel du samouraï
+            ViewBag.Potentiel = Getpotentiel(samourai);
             return View(samourai);
         }
 
@@ -42,7 +47,10 @@ namespace Module06_TP01.Controllers
         public ActionResult Create()
         {
             SamouraisVM samVM = new SamouraisVM();
-            samVM.Armes = db.Armes.Select(a => new SelectListItem { Text = a.Nom , Value= a.Id.ToString()}).ToList() ;
+
+            //stock dans le SamouraiVM la liste des armes disponibles et la liste des arts martiaux
+            samVM.Armes = db.Armes.Include(a => a.Samourai).Where(a => a.Samourai == null).Select(a => new SelectListItem { Text = a.Nom, Value = a.Id.ToString() }).ToList();
+            samVM.ArtMartials = db.ArtMartials.Select(a => new SelectListItem { Text = a.Nom, Value = a.Id.ToString() }).ToList();
             return View(samVM);
         }
 
@@ -58,7 +66,24 @@ namespace Module06_TP01.Controllers
                 Samourai samourai = new Samourai();
                 samourai.Nom = samVM.Nom;
                 samourai.Force = samVM.Force;
-                samourai.Arme = db.Armes.FirstOrDefault(a => a.Id == samVM.ArmeId);
+                //IEnumerable<Samourai> listSam = db.Samourais.Include(s => s.Arme).Where(s => s.Arme.Id == samVM.ArmeId);
+                //foreach (Samourai s in listSam)
+                //{
+                //    s.Arme = null;
+                //}
+
+                // Enregistre le nouveau propriétaire d'une arme si une arme à été seléctionnée
+                if (samVM.ArmeId != null)
+                {
+                    Arme arme = db.Armes.FirstOrDefault(a => a.Id == samVM.ArmeId);
+                    arme.Samourai = samourai;
+                    samourai.Arme = db.Armes.FirstOrDefault(a => a.Id == samVM.ArmeId);
+                }
+                //samourai.Arme = db.Armes.FirstOrDefault(a => a.Id == samVM.ArmeId);
+                if (samVM.ArtMartialsSelected != null)
+                {
+                    samourai.ArtMartials = db.ArtMartials.Where(a => samVM.ArtMartialsSelected.Contains(a.Id)).ToList();
+                }
                 db.Samourais.Add(samourai);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -74,7 +99,7 @@ namespace Module06_TP01.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Samourai samourai = db.Samourais.Find(id);
+            Samourai samourai = db.Samourais.Include(s => s.ArtMartials).Include(s => s.Arme).FirstOrDefault( s => s.Id == id);
             if (samourai == null)
             {
                 return HttpNotFound();
@@ -91,16 +116,36 @@ namespace Module06_TP01.Controllers
             {
                 samVM.ArmeId = samourai.Arme.Id;
             }
+
+            // permet d'afficher la liste d'armes disponibles si le samourai veut en équiper une
             if (addWeapon == true)
             {
                 samVM.AddWeapon = true;
             }
+
+            // permet de déséquiper une arme
             if (disarm == true)
             {
                 samVM.ArmeId = null;
                 samVM.Disarm = true;
             }
-            samVM.Armes = db.Armes.Select(a => new SelectListItem { Text = a.Nom, Value = a.Id.ToString() }).ToList();
+
+            // construction de la liste d'armes à afficher
+            List<Arme> armes = db.Armes.Include(a => a.Samourai).Where(a => a.Samourai == null).ToList();
+            if (samourai.Arme != null)
+                armes.Add(samourai.Arme);
+            if (armes.Count() > 0)
+            {
+                samVM.Armes = armes.Select(a => new SelectListItem { Text = a.Nom, Value = a.Id.ToString() }).ToList();
+            }
+            else
+            {
+                TempData["NoWeapon"] = "Il n'y a aucune arme disponible";
+            }
+
+            samVM.ArtMartials = db.ArtMartials.Select(a => new SelectListItem { Text = a.Nom, Value = a.Id.ToString() }).ToList();
+            samVM.ArtMartialsSelected = samourai.ArtMartials.Select(a => a.Id).ToList();
+
             return View(samVM);
         }
 
@@ -109,25 +154,38 @@ namespace Module06_TP01.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit( SamouraisVM samVM)
+        public ActionResult Edit(SamouraisVM samVM)
         {
             if (ModelState.IsValid)
             {
-                Samourai samourai = db.Samourais.Include(s => s.Arme).FirstOrDefault(s => s.Id == samVM.Id);
+                Samourai samourai = db.Samourais.Include(s => s.Arme).Include(s => s.ArtMartials).FirstOrDefault(s => s.Id == samVM.Id);
                 samourai.Nom = samVM.Nom;
                 samourai.Force = samVM.Force;
                 if (samVM.ArmeId != null)
                 {
+                    Arme arme = db.Armes.FirstOrDefault(a => a.Id == samVM.ArmeId);
+                    arme.Samourai = samourai;
                     samourai.Arme = db.Armes.FirstOrDefault(a => a.Id == samVM.ArmeId);
                 }
                 else
                 {
                     samourai.Arme = null;
                 }
+                if (samVM.ArtMartialsSelected != null)
+                {
+                    samourai.ArtMartials = db.ArtMartials.Where(a => samVM.ArtMartialsSelected.Contains(a.Id)).ToList();
+                }
+                else
+                {
+                    samourai.ArtMartials = null;
+                }
+
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
             samVM.Armes = db.Armes.Select(a => new SelectListItem { Text = a.Nom, Value = a.Id.ToString() }).ToList();
+            samVM.ArtMartials = db.ArtMartials.Select(a => new SelectListItem { Text = a.Nom, Value = a.Id.ToString() }).ToList();
             return View(samVM);
         }
 
@@ -138,11 +196,12 @@ namespace Module06_TP01.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Samourai samourai = db.Samourais.Find(id);
+            Samourai samourai = db.Samourais.Include(s => s.Arme).Include(s => s.ArtMartials).FirstOrDefault(s => s.Id == id);
             if (samourai == null)
             {
                 return HttpNotFound();
             }
+            ViewBag.Potentiel = Getpotentiel(samourai);
             return View(samourai);
         }
 
@@ -164,6 +223,22 @@ namespace Module06_TP01.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        // Fonction permettant de calculer le potentiel d'un samouraï
+        public int Getpotentiel(Samourai samourai)
+        {
+            int armeDegat = 0;
+            int artMartial = 0;
+            if (samourai.Arme != null)
+            {
+                armeDegat = samourai.Arme.Degats;
+            }
+            if (samourai.ArtMartials != null)
+            {
+                artMartial = samourai.ArtMartials.Count();
+            }
+            return (samourai.Force + armeDegat) * (artMartial + 1);
         }
     }
 }

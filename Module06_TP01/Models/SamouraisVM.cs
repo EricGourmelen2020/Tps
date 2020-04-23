@@ -19,5 +19,9 @@ namespace Module06_TP01.Models
         public bool AddWeapon { get; set; }
         public bool Disarm { get; set; }
         public List<SelectListItem> Armes { get; set; } = new List<SelectListItem>();
+        [Display(Name = "Arts martiaux maitrisés")]
+        public List<SelectListItem> ArtMartials { get; set; } = new List<SelectListItem>();
+        public List<int> ArtMartialsSelected { get; set; }
+
     }
 }

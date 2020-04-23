@@ -1,9 +1,9 @@
 ﻿namespace BO
 {
-    public class Arme
+    public class Arme : AbstractClass
     {
-        public int Id { get; set; }
         public string Nom { get; set; }
         public int Degats { get; set; }
+        public Samourai Samourai { get; set; }
     }
 }
